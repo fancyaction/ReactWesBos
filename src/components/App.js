@@ -5,11 +5,12 @@ import Inventory from "./Inventory";
 import Fish from "./Fish";
 import sampleFishes from "../sample-fishes";
 
-class App extends React.Component {
+export default class App extends React.Component {
   state = {
     fishes: {},
     order: {}
   };
+
   addFish = fish => {
     // 1. Make copy of existing state
     const fishes = { ...this.state.fishes };
@@ -18,8 +19,18 @@ class App extends React.Component {
     // 3. Set new fishes object to state
     this.setState({ fishes });
   };
+
   loadSampleFishes = () => {
     this.setState({ fishes: sampleFishes });
+  };
+
+  addToOrder = key => {
+    // 1. Make copy of state
+    const order = { ...this.state.order };
+    // 2. Add to order or update order amount
+    order[key] = order[key] + 1 || 1;
+    // 3. Call setState to update state object
+    this.setState({ order });
   };
   render() {
     return (
@@ -28,7 +39,12 @@ class App extends React.Component {
           <Header tagline="Fresh seafood market" />
           <ul className="fishes">
             {Object.keys(this.state.fishes).map(key => (
-              <Fish key={key} details={this.state.fishes[key]} />
+              <Fish
+                key={key}
+                index={key}
+                details={this.state.fishes[key]}
+                addToOrder={this.addToOrder}
+              />
             ))}
           </ul>
         </div>
@@ -41,5 +57,3 @@ class App extends React.Component {
     );
   }
 }
-
-export default App;
