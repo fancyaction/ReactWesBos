@@ -29,6 +29,7 @@ export default class App extends React.Component {
     const order = { ...this.state.order };
     // 2. Add to order or update order amount
     order[key] = order[key] + 1 || 1;
+    
     // 3. Call setState to update state object
     this.setState({ order });
   };
@@ -48,7 +49,7 @@ export default class App extends React.Component {
             ))}
           </ul>
         </div>
-        <Order />
+        <Order fishes={this.state.fishes} order={this.state.order}/>
         <Inventory
           addFish={this.addFish}
           loadSampleFishes={this.loadSampleFishes}
