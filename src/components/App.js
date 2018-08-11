@@ -1,10 +1,10 @@
-import React from "react";
-import Header from "./Header";
-import Order from "./Order";
-import Inventory from "./Inventory";
-import Fish from "./Fish";
-import sampleFishes from "../sample-fishes";
-import base from "../base";
+import React from 'react';
+import Header from './Header';
+import Order from './Order';
+import Inventory from './Inventory';
+import Fish from './Fish';
+import sampleFishes from '../sample-fishes';
+import base from '../base';
 
 export default class App extends React.Component {
   state = {
@@ -14,14 +14,24 @@ export default class App extends React.Component {
 
   componentDidMount() {
     const { params } = this.props.match;
+    // reset localStorage
+    const localStorageRef = localStorage.getItem(params.storeId);
+    if (localStorageRef) {
+      this.setState({ order: JSON.parse(localStorageRef) });
+    }
     this.ref = base.syncState(`${params.storeId}/fishes`, {
       context: this,
-      state: "fishes"
+      state: 'fishes'
     });
   }
 
   componentWillUnmount() {
     base.removeBinding(this.ref);
+  }
+
+  componentDidUpdate() {
+    const order = JSON.stringify(this.state.order);
+    localStorage.setItem(this.props.match.params.storeId, order);
   }
 
   addFish = fish => {
@@ -42,7 +52,7 @@ export default class App extends React.Component {
     const order = { ...this.state.order };
     // 2. Add to order or update order amount
     order[key] = order[key] + 1 || 1;
-    
+
     // 3. Call setState to update state object
     this.setState({ order });
   };
@@ -53,20 +63,12 @@ export default class App extends React.Component {
           <Header tagline="Fresh seafood market" />
           <ul className="fishes">
             {Object.keys(this.state.fishes).map(key => (
-              <Fish
-                key={key}
-                index={key}
-                details={this.state.fishes[key]}
-                addToOrder={this.addToOrder}
-              />
+              <Fish key={key} index={key} details={this.state.fishes[key]} addToOrder={this.addToOrder} />
             ))}
           </ul>
         </div>
-        <Order fishes={this.state.fishes} order={this.state.order}/>
-        <Inventory
-          addFish={this.addFish}
-          loadSampleFishes={this.loadSampleFishes}
-        />
+        <Order fishes={this.state.fishes} order={this.state.order} />
+        <Inventory addFish={this.addFish} loadSampleFishes={this.loadSampleFishes} />
       </div>
     );
   }
