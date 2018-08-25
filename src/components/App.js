@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Header from './Header';
 import Order from './Order';
 import Inventory from './Inventory';
@@ -11,6 +13,11 @@ export default class App extends React.Component {
     fishes: {},
     order: {}
   };
+
+  static propTypes = {
+    match: PropTypes.object
+  }
+
 
   componentDidMount() {
     const { params } = this.props.match;
@@ -67,11 +74,18 @@ export default class App extends React.Component {
   addToOrder = key => {
     // 1. Make copy of state
     const order = { ...this.state.order };
+    const fishes = { ...this.state.fishes };
+    console.log(this.state)
+    console.log(fishes['fish1'])
+    console.log(order);
+    // this.state.fishes.fish1 = 'poop';
+    // this.setState({order.fish1: 'poop' })
+    
     // 2. Add to order or update order amount
     order[key] = order[key] + 1 || 1;
 
     // 3. Call setState to update state object
-    this.setState({ order });
+    // this.setState({ order });
   };
 
   removeFromOrder = key => {
